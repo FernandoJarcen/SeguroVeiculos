@@ -1,5 +1,6 @@
-﻿using Insurance.Application.Services;
+﻿using Insurance.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace Insurance.API.Controllers
 {
@@ -7,28 +8,28 @@ namespace Insurance.API.Controllers
     [Route("api/[controller]")]
     public class SeguroController : ControllerBase
     {
-        private readonly SeguroService _seguroService;
+        private readonly ISeguroService _seguroService;
 
-        public SeguroController(SeguroService seguroService)
+        public SeguroController(ISeguroService seguroService)
         {
             _seguroService = seguroService;
         }
 
-        // POST: api/seguro
         [HttpPost]
-        public async Task<IActionResult> Registrar([FromBody] RegistroSeguroRequest request)
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Registrar([FromBody] SeguroRequest request)
         {
             try
             {
-                // Chama o service que busca o segurado no REST e calcula o seguro
                 var resultado = await _seguroService.RegistrarSeguroAsync(
-                    request.nome,
+                    request.Nome,
                     request.Cpf,
                     request.Idade,
                     request.MarcaModeloVeiculo,
                     request.ValorVeiculo);
 
-                return Ok(resultado);
+                return CreatedAtAction(nameof(ObterPorCPF), new { cpf = request.Cpf }, resultado);
             }
             catch (Exception ex)
             {
@@ -36,13 +37,29 @@ namespace Insurance.API.Controllers
             }
         }
 
-        // GET: api/seguro/relatorio
         [HttpGet("relatorio")]
         public async Task<IActionResult> ObterRelatorio()
         {
             var relatorio = await _seguroService.GerarRelatorioMediasAsync();
             return Ok(relatorio);
         }
+
+        [HttpGet("buscarcpf/{cpf}")]
+        public async Task<IActionResult> ObterPorCPF(string cpf)
+        {
+            var seguro = await _seguroService.ObterPorCPF(cpf);
+
+            if (seguro == null)
+                return NotFound(new { mensagem = "Seguro não encontrado para o CPF informado." });
+
+            return Ok(seguro);
+        }
     }
-    public record RegistroSeguroRequest(string nome, string Cpf, int Idade, string MarcaModeloVeiculo, decimal ValorVeiculo);
+    public record SeguroRequest(
+        [Required] string Nome,
+        [Required] string Cpf,
+        [Range(18, 120)] int Idade,
+        [Required] string MarcaModeloVeiculo,
+        [Range(0.01, double.MaxValue)] decimal ValorVeiculo
+    );
 }

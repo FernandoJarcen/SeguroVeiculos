@@ -6,6 +6,7 @@ namespace Insurance.Application
     {
         public Task AdicionarAsync(Seguro seguro);
         public Task<Seguro?> ObterPorIdAsync(Guid id);
+        public Task<List<Seguro>> ObterPorCPFAsync(string cpf);
         public Task<IEnumerable<Seguro>> ObterTodosAsync();
     }
 }

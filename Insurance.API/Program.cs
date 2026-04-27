@@ -1,34 +1,53 @@
 using Insurance.Application;
-using Insurance.Application.Services;
 using Insurance.Domain.Interfaces;
-using Insurance.Infrastructure;
-using Insurance.Infrastructure.Context;
+using Insurance.Infrastructure.Extensions;
 using Insurance.Infrastructure.Services;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-#region Services
+#region Camadas
 
-builder.Services.AddDbContext<InsuranceDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddApplication();
 
-builder.Services.AddScoped<ISeguroRepository, SeguroRepository>();
-builder.Services.AddScoped<SeguroService>();
 #endregion
+
+#region Infraestrutura
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var seguradoApiUrl = builder.Configuration["ExternalServices:SeguradoApiUrl"] ?? "http://localhost:3000";
+#endregion
 
-builder.Services.AddHttpClient<ISeguradoService, SeguradoExternalService>(client =>
-{
-    client.BaseAddress = new Uri("http://localhost:3000/"); // URL do seu JSON Server/Mock
+#region Serviços externos
+
+var seguradoApiUrl = builder.Configuration["ExternalServices:SeguradoApiUrl"] ?? "http://localhost:3000";
+builder.Services.AddHttpClient<ISeguradoService, SeguradoExternalService>(client => {
+    client.BaseAddress = new Uri(seguradoApiUrl);
+});
+
+#endregion
+
+#region Segurança
+
+builder.Services.AddCors(options => {
+    options.AddPolicy("AllowAll", b => b.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 });
 
 var app = builder.Build();
+
+#endregion
+
+#region Tratamento de Erros Globais
+
+app.UseExceptionHandler(exceptionHandlerApp => {
+    exceptionHandlerApp.Run(async context => {
+        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+        context.Response.ContentType = "application/json";
+        await context.Response.WriteAsJsonAsync(new { mensagem = "Ocorreu um erro interno no servidor." });
+    });
+});
 
 if (app.Environment.IsDevelopment())
 {
@@ -36,12 +55,36 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(options =>
     {
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
-        options.RoutePrefix = string.Empty; 
     });
 }
 
+#endregion
+
+#region arquivos estaticos
+
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
+#endregion
+
+#region Redirecionamento e roteamento
+
 app.UseHttpsRedirection();
+app.UseRouting();
+
+#endregion
+
+#region outros
+
+app.UseCors("AllowAll");
 app.UseAuthorization();
+
+#endregion
+
+#region endpoints
+
 app.MapControllers();
+
+#endregion
 
 app.Run();

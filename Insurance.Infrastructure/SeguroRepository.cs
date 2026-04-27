@@ -32,6 +32,10 @@ namespace Insurance.Infrastructure
             return await _context.Seguros.FindAsync(id);
         }
 
+        public async Task<List<Seguro>> ObterPorCPFAsync(string cpf)
+        {
+            return await _context.Seguros.Where(x => x.CPF == cpf).ToListAsync();
+        }
         public async Task<IEnumerable<Seguro>> ObterTodosAsync()
         {
             return await _context.Seguros.ToListAsync();
