@@ -14,3 +14,7 @@ Nesse repositorio tem todos os artefactos solicitados do exame.
 
 6 - o endpoint api/seguro/buscarcpf vai mostrar todos os registros associados ao cpf informado desde que esse exista na base de dados
 a página html e o swagger podem ser instanciados na mesma aba do navegador
+
+<img width="1188" height="655" alt="image" src="https://github.com/user-attachments/assets/88023fca-9a3d-4d42-b749-70c61db009d9" />
+
+a imagem mostra os dados gravados na base local
