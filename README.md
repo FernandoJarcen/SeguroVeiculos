@@ -1,6 +1,7 @@
 # SeguroVeiculos
 Exame de seguro de veículos
 Nesse repositorio tem todos os artefactos solicitados do exame.
+
 1 - criar o Banco de dados através da migration que acompanha o projeto
 
 2 - Alterar a connectionString para que possa refletir o que foi desenvolvido na máquina
