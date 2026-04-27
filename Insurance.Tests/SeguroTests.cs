@@ -18,7 +18,7 @@ public class SeguroTests
         var seguro = new Seguro(nome, cpf, idade, veiculo, valorVeiculo);
 
         // Assert (Asserir/Verificar)
-        Assert.Equal(0.025m, seguro.TaxadeRisco);          // 2,5%
+        Assert.Equal(0.025m, seguro.TaxaRisco);          // 2,5%
         Assert.Equal(250.00m, seguro.PremioRisco);      // R$ 250,00
         Assert.Equal(257.50m, seguro.PremioPuro);       // R$ 257,50
         Assert.Equal(270.37m, Math.Round(seguro.PremioComercial, 2)); // R$ 270,37

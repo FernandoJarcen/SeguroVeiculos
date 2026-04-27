@@ -16,8 +16,15 @@ namespace Insurance.Infrastructure
 
         public async Task AdicionarAsync(Seguro seguro)
         {
-            await _context.Seguros.AddAsync(seguro);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.Seguros.AddAsync(seguro);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                string mensagem = e.Message;                
+            }
         }
 
         public async Task<Seguro> ObterPorIdAsync(Guid id)

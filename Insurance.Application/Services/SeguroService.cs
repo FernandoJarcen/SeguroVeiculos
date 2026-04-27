@@ -14,13 +14,12 @@ namespace Insurance.Application.Services
             _externalService = externalService;
         }
 
-        public async Task<Seguro> RegistrarSeguroAsync(string cpf, string veiculo, decimal valorVeiculo)
+        public async Task<Seguro> RegistrarSeguroAsync(string nome, string cpf, int idade, string veiculo, decimal valorVeiculo)
         {
             //var (nome, idade, CPF) = await _externalService.ObterDadosSeguradoAsync(cpf);
-            string nome = "Fernando Jarcen (Teste Local)";
-            int idade = 50;
-            cpf = "123.456.789-00";
-
+            //string nome = "Fernando Jarcen (Teste Local)";
+            //int idade = 50;
+            
             var novoSeguro = new Seguro(nome, cpf, idade, veiculo, valorVeiculo);
 
             await _repository.AdicionarAsync(novoSeguro);

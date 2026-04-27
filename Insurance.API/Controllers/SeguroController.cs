@@ -22,7 +22,9 @@ namespace Insurance.API.Controllers
             {
                 // Chama o service que busca o segurado no REST e calcula o seguro
                 var resultado = await _seguroService.RegistrarSeguroAsync(
+                    request.nome,
                     request.Cpf,
+                    request.Idade,
                     request.MarcaModeloVeiculo,
                     request.ValorVeiculo);
 
@@ -42,5 +44,5 @@ namespace Insurance.API.Controllers
             return Ok(relatorio);
         }
     }
-    public record RegistroSeguroRequest(string Cpf, string MarcaModeloVeiculo, decimal ValorVeiculo);
+    public record RegistroSeguroRequest(string nome, string Cpf, int Idade, string MarcaModeloVeiculo, decimal ValorVeiculo);
 }

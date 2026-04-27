@@ -13,13 +13,11 @@ namespace Insurance.Infrastructure.Context
         {
             modelBuilder.Entity<Seguro>(entity =>
             {
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.CPF).IsRequired().HasMaxLength(14);
-                entity.Property(e => e.NomeSegurado).IsRequired().HasMaxLength(100);
-                entity.Property(e => e.MarcaModeloVeiculo).IsRequired().HasMaxLength(100);
-
-                entity.Property(e => e.ValorVeiculo).HasPrecision(18, 2);
-                entity.Property(e => e.PremioComercial).HasPrecision(18, 2);
+                entity.Property(s => s.ValorVeiculo).HasPrecision(18, 2);
+                entity.Property(s => s.TaxaRisco).HasPrecision(18, 4); // Taxas podem ter mais casas
+                entity.Property(s => s.PremioRisco).HasPrecision(18, 2);
+                entity.Property(s => s.PremioPuro).HasPrecision(18, 2);
+                entity.Property(s => s.PremioComercial).HasPrecision(18, 2);
             });
 
             base.OnModelCreating(modelBuilder);

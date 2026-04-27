@@ -10,10 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 #region Services
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-
 builder.Services.AddDbContext<InsuranceDbContext>(options =>
-    options.UseSqlServer(connectionString, b => b.MigrationsAssembly("Insurance.Infrastructure")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<ISeguroRepository, SeguroRepository>();
 builder.Services.AddScoped<SeguroService>();
