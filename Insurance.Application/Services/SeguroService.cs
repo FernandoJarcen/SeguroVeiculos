@@ -16,10 +16,6 @@ namespace Insurance.Application.Services
 
         public async Task<Seguro> RegistrarSeguroAsync(string nome, string cpf, int idade, string veiculo, decimal valorVeiculo)
         {
-            //var (nome, idade, CPF) = await _externalService.ObterDadosSeguradoAsync(cpf);
-            //string nome = "Fernando Jarcen (Teste Local)";
-            //int idade = 50;
-
             var novoSeguro = new Seguro(nome, cpf, idade, veiculo, valorVeiculo);
 
             await _repository.AdicionarAsync(novoSeguro);
